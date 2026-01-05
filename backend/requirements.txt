@@ -1,6 +1,6 @@
 flask
 flask-cors
-elasticsearch
+elasticsearch<8.0.0
 requests
 pandas
 googlemaps

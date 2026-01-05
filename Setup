@@ -1,154 +1,47 @@
-SETUP INSTRUCTIONS
+NAVODILA ZA ZAGON PROJEKTA (BACKEND & FRONTEND)
+1. PODATKOVNA PLAST (DOCKER)
+Preden začneš z ostalimi koraki, morata biti bazi pripravljeni.
 
-SYSTEM REQUIREMENTS
+Odpri Docker Desktop in počakaj, da piše “Engine is running”.
 
-Install the following software:
-
-Docker Desktop
-
-Python 3.10 or newer
-
-Node.js 20 or newer
-
-Git
-
-After installing Docker Desktop, RESTART your computer.
-
-CLONE THE PROJECT
-
-Open a terminal and run:
-
-git clone https://github.com/
-cd multimedijaProjekt
-
-ELASTICSEARCH + KIBANA (REQUIRED)
-
-This project uses Elasticsearch 7.x (NOT 8 or 9).
-
-Open Docker Desktop
-
-Wait until it says “Docker is running”
-
-From the project root run:
+V korenu projekta (kjer je docker-compose.yml) zaženi:
 
 docker-compose up -d
 
-You must see:
+Preverjanje: V Docker Desktopu moraš videti delujoča vsebnika: es (Elasticsearch) in kibana.
 
-es
+Čiščenje (Reset baze): Če želiš popolnoma izbrisati stare podatke in začeti z nule, uporabi:
 
-kibana
+docker-compose down -v
 
-If Elasticsearch is not running, the backend WILL NOT WORK.
+docker-compose up -d
 
-BACKEND SETUP (FLASK)
-
-Go to backend folder:
+2. BACKEND SETUP (FLASK)
+Odpri nov terminal in pojdi v mapo backend:
 
 cd backend
 
-Create virtual environment:
+Ustvari virtualno okolje:
 
 python -m venv venv
 
-Activate virtual environment (Windows):
+Aktivacija virtualnega okolja (Windows):
 
 venv\Scripts\activate
 
-Install dependencies:
+Namesti dependencije:
 
 pip install -r requirements.txt
 
-Start backend:
+Zagon backenda:
 
 python app.py
 
-Backend URL:
+3. FRONTEND SETUP (REACT / VITE)
+Odpri nov terminal in pojdi v mapo frontend:
 
-http://localhost:5000
-
-NOTES:
-
-There is NO route at /
-
-http://localhost:5000/
- returning 404 is NORMAL
-
-Elasticsearch index is created automatically on first run
-
-AVAILABLE API ENDPOINTS:
-
-GET /api/municipality/<code>
-
-GET /api/municipalities/regions
-
-GET /api/reload (clears and reloads Elasticsearch)
-
-USE THIS TO RELOAD ALL THE DATA IN THE DATABASE
-
-curl -X POST http://127.0.0.1:5000/api/admin/reload-data
-
-FRONTEND SETUP (REACT + VITE)
-
-Go to frontend folder:
-
-cd ../frontend
-
-Install dependencies:
+cd frontend
 
 npm install
 
-Start frontend:
-
 npm run dev
-
-Frontend URL:
-
-http://localhost:5173
-
-PROJECT STRUCTURE
-
-multimedijaProjekt/
-backend/ Flask API
-frontend/ React frontend
-docker-compose.yml
-SETUP.txt
-
-HOW EVERYTHING CONNECTS
-
-Frontend communicates with backend using HTTP
-
-Backend stores and reads data from Elasticsearch
-
-Elasticsearch acts as the database
-
-Municipality CODE is the shared key between:
-
-SVG map
-
-Backend data
-
-Elasticsearch documents
-
-HOW TO RUN THE PROJECT (EVERY TIME)
-
-Start Docker Desktop
-
-From project root:
-
-docker-compose up -d
-
-Start backend:
-
-cd backend
-venv\Scripts\activate
-python app.py
-
-Start frontend:
-
-cd frontend
-npm run dev
-
-Open browser:
-
-http://localhost:5173
