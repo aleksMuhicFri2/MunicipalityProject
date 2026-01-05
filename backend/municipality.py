@@ -39,6 +39,8 @@ class Municipality:
         self.history_avg_temp = 0.0
 
         self.weather_index = 0.0
+        self.affordability_index = 0.0
+        self.healthcare_index = 0.0
 
     def to_dict(self):
         return {
@@ -66,5 +68,7 @@ class Municipality:
             "history_foggy_days" : self.history_foggy_days,
             "history_avg_aqi" : self.history_avg_aqi,
             "history_avg_temp" : self.history_avg_temp,
-            "weather_index" : self.weather_index
+            "weather_index" : self.weather_index,
+            "affordability_index": self.affordability_index,
+            "healthcare_index": self.healthcare_index
         }

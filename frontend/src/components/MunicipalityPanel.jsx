@@ -1,82 +1,136 @@
 import React from "react";
+import { Doughnut } from "react-chartjs-2";
+import "chart.js/auto";
 
 function MunicipalityPanel({ data }) {
-  const getWeatherColor = (score) => {
-    if (score >= 8) return "#2e7d32";
-    if (score >= 6) return "#66bb6a";
-    if (score >= 4) return "#fbc02d";
-    return "#d32f2f";
+  if (!data) {
+    return (
+      <div className="empty-state-container">
+        <div className="empty-content">
+          <span className="map-icon">📍</span>
+          <h2>Izberite občino</h2>
+          <p>Kliknite na zemljevid za podrobno analizo.</p>
+        </div>
+      </div>
+    );
+  }
+
+  const populationTotal = (data.population_young || 0) + (data.population_working || 0) + (data.population_old || 0);
+  
+  const popChartData = {
+    labels: ["Mladi", "Aktivni", "Starejši"],
+    datasets: [{
+      data: [data.population_young, data.population_working, data.population_old],
+      backgroundColor: ["#60A5FA", "#10B981", "#F59E0B"],
+      borderWidth: 0,
+    }],
   };
 
-  // Helper to color-code the demographic tag
-  const getTagStyle = (tag) => {
-    const styles = {
-      "Mlado Prebivalstvo": { bg: "#e8f5e9", text: "#2e7d32", border: "#c8e6c9" },
-      "Delavno Prebivalstvo": { bg: "#e3f2fd", text: "#1565c0", border: "#bbdefb" },
-      "Staro Prebivalstvo": { bg: "#fff3e0", text: "#e65100", border: "#ffe0b2" }
-    };
-    return styles[tag] || { bg: "#f5f5f5", text: "#616161", border: "#e0e0e0" };
+  const chartOptions = {
+    maintainAspectRatio: false,
+    cutout: "70%",
+    plugins: { legend: { display: false } }
   };
 
-  const tagStyle = getTagStyle(data.main_demographic);
+  // Logika barv
+  const getHealthColor = (val) => (val >= 90 ? "#10B981" : val >= 80 ? "#F59E0B" : "#EF4444");
+  const getWeatherColor = (val) => (val >= 7.5 ? "#10B981" : val >= 5.0 ? "#F59E0B" : "#EF4444");
 
   return (
-    <div style={{
-        display: "flex", flexDirection: "row", justifyContent: "space-between",
-        width: "100%", maxWidth: "1300px", padding: "1.5rem",
-        backgroundColor: "#fff", borderRadius: "12px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.08)", gap: "1.5rem", fontFamily: "sans-serif"
-    }}>
-      {/* SECTION 1: Location & Demographic Tag */}
-      <div style={{ flex: 1.2, textAlign: "left" }}>
-        <h2 style={{ margin: "0 0 0.2rem 0", color: "#333" }}>{data.name}</h2>
-        <p style={{ margin: "0 0 0.8rem 0", color: "#666", fontSize: "0.9rem" }}>{data.region}</p>
-        
-        {/* THE NEW TAG */}
-        <div style={{
-          display: "inline-block", padding: "4px 12px", borderRadius: "20px",
-          backgroundColor: tagStyle.bg, color: tagStyle.text,
-          border: `1px solid ${tagStyle.border}`, fontSize: "0.75rem", fontWeight: "bold",
-          textTransform: "uppercase", letterSpacing: "0.5px"
-        }}>
-          🏷️ {data.main_demographic ?? "Calculating..."}
-        </div>
+    <div className="muni-dashboard fade-in">
+      {/* Glava */}
+      <header className="mb-4">
+        <h1 className="text-2xl font-black text-slate-800 leading-tight">{data.name}</h1>
+        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">{data.region}</span>
+      </header>
 
-        <div style={{ marginTop: "1.5rem" }}>
-          <span style={{ fontSize: "0.7rem", color: "#999", textTransform: "uppercase" }}>Weather Index</span>
-          <div style={{ fontSize: "2.2rem", fontWeight: "bold", color: getWeatherColor(data.weather_index) }}>
-            {data.weather_index?.toFixed(1) ?? "N/A"}
-            <span style={{ fontSize: "0.9rem", color: "#ccc" }}> / 10</span>
+      {/* 1. Prebivalstvo */}
+      <div className="metric-card hero flex items-center justify-between mb-3 bg-slate-50">
+        <div>
+          <label className="text-[10px] uppercase font-bold text-slate-500">Prebivalstvo</label>
+          <div className="text-3xl font-black text-slate-900 leading-none my-1">
+            {populationTotal.toLocaleString('sl-SI')}
+          </div>
+          <div className="demographic-badge text-[10px] py-1 px-3">{data.main_demographic}</div>
+        </div>
+        <div className="chart-wrapper h-20 w-20">
+          <Doughnut data={popChartData} options={chartOptions} />
+        </div>
+      </div>
+
+      {/* 2. Nepremičnine (Horizontalno) */}
+      <div className="metric-card mb-3">
+        <label className="text-[10px] uppercase font-bold text-slate-500 block mb-3">Nepremičnine (Povprečje)</label>
+        <div className="flex justify-between items-center px-2">
+          <div className="flex items-center gap-3">
+            <span className="text-xl">🔑</span>
+            <div>
+              <span className="block text-sm font-black text-slate-700">{data.avg_rent_m2?.toFixed(1)} €/m²</span>
+              <span className="text-[9px] text-slate-400 uppercase font-bold">Najem</span>
+            </div>
+          </div>
+          
+          <div className="h-8 w-[1px] bg-slate-100"></div>
+
+          <div className="flex items-center gap-3">
+            <span className="text-xl">🏠</span>
+            <div>
+              <span className="block text-sm font-black text-slate-700">
+                {Math.round(data.avg_price_m2_apartment).toLocaleString('sl-SI')} €/m²
+              </span>
+              <span className="text-[9px] text-slate-400 uppercase font-bold">Nakup</span>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* SECTION 2: Population */}
-      <div style={{ flex: 1 }}>
-        <h4 style={{ borderBottom: "2px solid #f0f0f0", paddingBottom: "5px", color: "#444" }}>👥 Population</h4>
-        <div style={{ fontSize: "0.9rem", lineHeight: "1.8" }}>
-          <div>Young: <b>{data.population_young.toLocaleString()}</b></div>
-          <div>Working: <b>{data.population_working.toLocaleString()}</b></div>
-          <div>Old: <b>{data.population_old.toLocaleString()}</b></div>
+      {/* 3. Zdravstvo (IOZ) */}
+      <div className="metric-card mb-3">
+        <div className="flex justify-between items-center mb-2">
+          <label className="text-[10px] uppercase font-bold text-slate-500">Zdravstvo (IOZ)</label>
+          <span className="text-sm font-black" style={{ color: getHealthColor(data.ioz_ratio * 100) }}>
+            {(data.ioz_ratio * 100).toFixed(1)}%
+          </span>
+        </div>
+        <div className="progress-bg h-2">
+          <div className="progress-fill" style={{ width: `${data.ioz_ratio * 100}%`, background: getHealthColor(data.ioz_ratio * 100) }}></div>
         </div>
       </div>
 
-      {/* SECTION 3: Real Estate */}
-      <div style={{ flex: 1 }}>
-        <h4 style={{ borderBottom: "2px solid #f0f0f0", paddingBottom: "5px", color: "#444" }}>🏠 Real Estate</h4>
-        <div style={{ fontSize: "0.9rem", lineHeight: "1.8" }}>
-          <div>Apartment: <b>{data.avg_price_m2_apartment ? `${data.avg_price_m2_apartment}€` : "N/A"}</b></div>
-          <div>Rent (m²): <b>{data.avg_rent_m2 ? `${data.avg_rent_m2}€` : "N/A"}</b></div>
+      {/* 4. Okolje in Vreme (Isti stil kot zdravstvo) */}
+      <div className="metric-card">
+        <div className="flex justify-between items-center mb-2">
+          <label className="text-[10px] uppercase font-bold text-slate-500">Okolje & Vreme</label>
+          <span className="text-sm font-black" style={{ color: getWeatherColor(data.weather_index) }}>
+            {data.weather_index?.toFixed(1)}
+          </span>
         </div>
-      </div>
+        
+        {/* Vrstica napredka (1-10) */}
+        <div className="progress-bg h-2 mb-4">
+          <div 
+            className="progress-fill" 
+            style={{ 
+              width: `${(data.weather_index / 10) * 100}%`, 
+              background: getWeatherColor(data.weather_index) 
+            }}
+          ></div>
+        </div>
 
-      {/* SECTION 4: Health & Environment */}
-      <div style={{ flex: 1 }}>
-        <h4 style={{ borderBottom: "2px solid #f0f0f0", paddingBottom: "5px", color: "#444" }}>🏥 Quality of Life</h4>
-        <div style={{ fontSize: "0.9rem", lineHeight: "1.8" }}>
-          <div>Health Coverage: <b>{(data.ioz_ratio * 100).toFixed(1)}%</b></div>
-          <div>Air (AQI): <b style={{ color: data.history_avg_aqi > 35 ? "#ef6c00" : "#2e7d32" }}>{data.history_avg_aqi.toFixed(1)}</b></div>
-          <div>Sun Days: <b>{data.history_sunny_days}</b></div>
+        {/* Ikone in podrobni podatki */}
+        <div className="flex justify-between items-center px-1">
+          <div className="text-center">
+            <span className="block text-lg">☀️</span>
+            <span className="block font-bold text-xs">{data.history_sunny_days} <small className="text-slate-400 font-normal">dni</small></span>
+          </div>
+          <div className="text-center">
+            <span className="block text-lg">🌬️</span>
+            <span className="block font-bold text-xs">{data.history_avg_aqi?.toFixed(0)} <small className="text-slate-400 font-normal">AQI</small></span>
+          </div>
+          <div className="text-center">
+            <span className="block text-lg">🌡️</span>
+            <span className="block font-bold text-xs">{data.history_avg_temp?.toFixed(1)}°C</span>
+          </div>
         </div>
       </div>
     </div>

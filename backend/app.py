@@ -21,7 +21,9 @@ from data_processor import (
     process_lat_long,
     process_history,
     calculate_weather_scores,
-    calculate_demographics
+    calculate_demographics,
+    calculate_affordability_scores,
+    calculate_healthcare_scores
 )
 from surs_api import get_population_per_obcina
 
@@ -104,6 +106,8 @@ def fetch_and_process_data():
     # This must happen LAST so that it has access to the merged history data
     logger.info("Calculating normalized weather scores...")
     calculate_weather_scores(municipalities)
+    calculate_affordability_scores(municipalities)
+    calculate_healthcare_scores(municipalities)
     calculate_demographics(municipalities)
     
     return municipalities

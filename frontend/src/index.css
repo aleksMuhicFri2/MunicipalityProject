@@ -1,3 +1,337 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* =========================================
+   CUSTOM DASHBOARD STYLES
+   ========================================= */
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  background-color: #f8fafc;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* --- 1. MAIN LAYOUT (Split Screen) --- */
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+/* LEFT SIDE: Data Panel */
+.panel-section {
+  width: 50%;         /* Change from 500px to 50% */
+  min-width: 50%;     /* Ensure it stays at half */
+  background: white;
+  border-right: 1px solid #e2e8f0;
+  overflow-y: auto;
+  padding: 1rem;
+  box-shadow: 4px 0 24px rgba(0,0,0,0.05);
+  z-index: 10;
+  box-sizing: border-box;
+}
+
+/* RIGHT SIDE: Map */
+.map-section {
+  width: 50%;         /* Ensure the map side is also 50% */
+  position: relative;
+  background-color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;   /* Keeps the map from leaking out if it scales up */
+}
+
+/* --- 2. DASHBOARD COMPONENT STYLES --- */
+
+/* Animations */
+.fade-in { animation: fadeIn 0.4s ease-out; }
+@keyframes fadeIn { 
+  from { opacity: 0; transform: translateY(10px); } 
+  to { opacity: 1; transform: translateY(0); } 
+}
+
+/* Header */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.city-name {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.region-tag {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #64748b;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.weather-badge {
+  border: 3px solid;
+  border-radius: 12px;
+  padding: 5px 5px;
+  text-align: center;
+  font-weight: 700;
+  background: #fff;
+  min-width: 60px;
+}
+.weather-badge span { display: block; font-size: 1.2rem; }
+.weather-badge small { font-size: 0.6rem; text-transform: uppercase; color: #94a3b8; }
+
+/* Grid System */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+/* Cards */
+.metric-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border: 1px solid #f1f5f9;
+  transition: transform 0.2s;
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+/* Hero Card (Population) */
+.metric-card.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right bottom, #fff, #f8fafc);
+}
+
+.metric-info label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  color: #64748b;
+  font-weight: 700;
+}
+
+.value-large {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0.2rem 0 1rem 0;
+}
+
+.chart-wrapper {
+  height: 120px;
+  width: 120px;
+  position: relative;
+}
+
+/* Badges */
+.demographic-tag-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.tag-label {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.demographic-badge {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 4px 12px;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-block;
+}
+
+/* Housing Row */
+.card-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.housing-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+
+.h-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.h-icon-box {
+  background: #f1f5f9;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.h-val {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #334155;
+}
+
+.h-label {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  display: block;
+  font-weight: 600;
+}
+
+.h-divider { width: 1px; height: 40px; background: #e2e8f0; }
+
+/* Health Progress */
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+  color: #475569;
+}
+.score-val { font-weight: 800; }
+
+.progress-bg {
+  background: #e2e8f0;
+  height: 10px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 1s ease-out;
+}
+
+.sub-text {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 0.8rem;
+  line-height: 1.4;
+}
+
+/* Weather Grid */
+.weather-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-top: 1rem;
+  text-align: center;
+}
+.w-item { display: flex; flex-direction: column; gap: 4px; }
+.w-icon { font-size: 1.5rem; display: block; margin-bottom: 4px; }
+.w-val { font-weight: 700; color: #334155; font-size: 1rem; }
+.w-val small { display: block; font-weight: 600; color: #94a3b8; font-size: 0.7rem; text-transform: uppercase; margin-top: 2px; }
+
+/* Empty State */
+.empty-state-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #94a3b8;
+}
+.map-icon { font-size: 4rem; display: block; margin-bottom: 1rem; opacity: 0.5; }
+.empty-state-container h2 { color: #475569; margin-bottom: 0.5rem; }
+
+
+/* Fixed Header Styles */
+.fixed-header {
+  height: 70px;
+  width: 100%;
+  background: white;
+  border-bottom: 2px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+  box-sizing: border-box;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin: 0;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.nav-btn.inactive {
+  background: #f1f5f9;
+  color: #64748b;
+}
+
+.nav-btn.active {
+  background: #e0f2fe;
+  color: #0369a1;
+  border-color: #0369a1;
+}
+
+/* Adjust the main container to start below the header */
+.app-container {
+  display: flex;
+  height: calc(100vh - 70px);
+  width: 100vw;
+  margin-top: 70px; /* Offset for the header */
+  overflow: hidden;
+}
