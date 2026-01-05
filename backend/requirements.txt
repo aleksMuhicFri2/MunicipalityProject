@@ -3,6 +3,4 @@ flask-cors
 elasticsearch
 requests
 pandas
-re
-unicodedata
 googlemaps
