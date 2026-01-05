@@ -230,6 +230,17 @@ def travel_time():
         }
     except Exception as e:
         return {"error": str(e)}, 500
+    
+@app.route("/api/municipalities/all")
+def get_all_municipalities():
+    """Returns all municipalities for the search algorithm."""
+    try:
+        # We search for all but only take the fields we need for the math
+        res = es.search(index=INDEX, body={"query": {"match_all": {}}, "size": 300})
+        hits = [hit["_source"] for hit in res["hits"]["hits"]]
+        return jsonify(hits)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500    
 
 if __name__ == "__main__":
     app.run(port=5000, debug=True)

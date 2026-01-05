@@ -58,7 +58,7 @@ function MunicipalityPanel({ data }) {
         </div>
       </div>
 
-      {/* 2. Nepremičnine (Horizontalno) */}
+      {/* 2. Nepremičnine */}
       <div className="metric-card mb-3">
         <label className="text-[10px] uppercase font-bold text-slate-500 block mb-3">Nepremičnine (Povprečje)</label>
         <div className="flex justify-between items-center px-2">
@@ -84,10 +84,10 @@ function MunicipalityPanel({ data }) {
         </div>
       </div>
 
-      {/* 3. Zdravstvo (IOZ) */}
+      {/* 3. Zdravstvo */}
       <div className="metric-card mb-3">
         <div className="flex justify-between items-center mb-2">
-          <label className="text-[10px] uppercase font-bold text-slate-500">Zdravstvo (IOZ)</label>
+          <label className="text-[10px] uppercase font-bold text-slate-500">Zdravstvo (Procent pokritosti)</label>
           <span className="text-sm font-black" style={{ color: getHealthColor(data.ioz_ratio * 100) }}>
             {(data.ioz_ratio * 100).toFixed(1)}%
           </span>
@@ -97,17 +97,16 @@ function MunicipalityPanel({ data }) {
         </div>
       </div>
 
-      {/* 4. Okolje in Vreme (Isti stil kot zdravstvo) */}
+      {/* 4. Okolje in Vreme */}
       <div className="metric-card">
         <div className="flex justify-between items-center mb-2">
           <label className="text-[10px] uppercase font-bold text-slate-500">Okolje & Vreme</label>
           <span className="text-sm font-black" style={{ color: getWeatherColor(data.weather_index) }}>
-            {data.weather_index?.toFixed(1)}
+            {data.weather_index?.toFixed(1)} <small className="text-slate-300 font-normal">/ 10</small>
           </span>
         </div>
         
-        {/* Vrstica napredka (1-10) */}
-        <div className="progress-bg h-2 mb-4">
+        <div className="progress-bg h-2 mb-6">
           <div 
             className="progress-fill" 
             style={{ 
@@ -117,21 +116,31 @@ function MunicipalityPanel({ data }) {
           ></div>
         </div>
 
-        {/* Ikone in podrobni podatki */}
-        <div className="flex justify-between items-center px-1">
-          <div className="text-center">
-            <span className="block text-lg">☀️</span>
-            <span className="block font-bold text-xs">{data.history_sunny_days} <small className="text-slate-400 font-normal">dni</small></span>
+        {/* Ikone s podrobnimi opisi */}
+        <div className="grid grid-cols-3 gap-2 px-1">
+          <div className="text-center flex flex-col items-center">
+            <span className="text-xl mb-1">☀️</span>
+            <span className="font-black text-sm text-slate-700">{data.history_sunny_days}</span>
+            <span className="text-[9px] uppercase font-bold text-slate-400 tracking-tighter">Sončnih dni</span>
           </div>
-          <div className="text-center">
-            <span className="block text-lg">🌬️</span>
-            <span className="block font-bold text-xs">{data.history_avg_aqi?.toFixed(0)} <small className="text-slate-400 font-normal">AQI</small></span>
+
+          <div className="text-center flex flex-col items-center border-x border-slate-50">
+            <span className="text-xl mb-1">🌬️</span>
+            <span className="font-black text-sm text-slate-700">{data.history_avg_aqi?.toFixed(0)}</span>
+            <span className="text-[9px] uppercase font-bold text-slate-400 tracking-tighter">Kakovost zraka</span>
           </div>
-          <div className="text-center">
-            <span className="block text-lg">🌡️</span>
-            <span className="block font-bold text-xs">{data.history_avg_temp?.toFixed(1)}°C</span>
+
+          <div className="text-center flex flex-col items-center">
+            <span className="text-xl mb-1">🌡️</span>
+            <span className="font-black text-sm text-slate-700">{data.history_avg_temp?.toFixed(1)}°C</span>
+            <span className="text-[9px] uppercase font-bold text-slate-400 tracking-tighter">Povp. temp.</span>
           </div>
         </div>
+        
+        {/* Kratka legenda za AQI (opcijsko, za boljšo razumljivost) */}
+        <p className="text-[8px] text-slate-500 text-center mt-4 uppercase tracking-widest">
+          AQI: nižja vrednost pomeni čistejši zrak
+        </p>
       </div>
     </div>
   );
